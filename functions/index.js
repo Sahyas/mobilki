@@ -1,0 +1,39 @@
+const { onObjectFinalized } = require("firebase-functions/v2/storage");
+const { initializeApp } = require("firebase-admin/app");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
+
+initializeApp();
+const db = getFirestore();
+
+exports.onBookUploaded = onObjectFinalized(
+    { bucket: "flutter-zaliczenie-f9528.appspot.com" },
+    async (event) => {
+        const filePath = event.data.name;
+        const contentType = event.data.contentType;
+
+        console.log("Triggered for:", filePath);
+
+        if (!filePath || !filePath.startsWith("books/")) {
+            console.log("Skipping: not in books/ folder");
+            return null;
+        }
+
+        const fileName = filePath.split("/").pop();
+        const metadata = event.data.metadata || {};
+
+        const bookData = {
+            fileName: fileName,
+            filePath: filePath,
+            title: metadata.title || fileName.replace(/\.[^/.]+$/, ""),
+            author: metadata.author || "Unknown",
+            format: fileName.split(".").pop(),
+            contentType: contentType,
+            size: parseInt(event.data.size, 10),
+            uploadedAt: FieldValue.serverTimestamp(),
+        };
+
+        await db.collection("books").doc(fileName).set(bookData);
+        console.log(`Book metadata saved: ${fileName}`);
+        return null;
+    }
+);

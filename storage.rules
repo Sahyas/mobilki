@@ -1,0 +1,13 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /books/{fileName} {
+      // Allow all reads
+      allow read: if true;
+
+      // Allow all writes (for emulator/development)
+      // Change to "request.auth != null" for production
+      allow write: if true;
+    }
+  }
+}

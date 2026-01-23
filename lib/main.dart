@@ -3,14 +3,24 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'screens/home_screen.dart';
 
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Connect to emulators in debug mode
+  const bool useEmulator = true; // Set to false for production
+  if (useEmulator) {
+    FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+    FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+  }
+
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
