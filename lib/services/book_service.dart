@@ -12,10 +12,6 @@ class BookService {
         snapshot.docs.map((doc) => Book.fromFirestore(doc.data(), doc.id)).toList());
   }
 
-  Future<void> addBook(Book book) async {
-    await _db.collection('books').add(book.toMap());
-  }
-
   Future<String> getDownloadUrl(String storageUrl) async {
     final ref = _storage.refFromURL(storageUrl);
     return await ref.getDownloadURL();
