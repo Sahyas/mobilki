@@ -28,7 +28,7 @@ class Book {
       author: data['author'] ?? '',
       description: data['description'],
       coverUrl: data['coverUrl'],
-      fileUrl: data['fileUrl'],
+      fileUrl: data['downloadUrl'] ?? data['fileUrl'], // Use downloadUrl field
       format: data['format'],
       dynamicMetadata: (data['dynamicMetadata'] as List<dynamic>?)
           ?.map((e) => DynamicMetadata.fromMap(e))
@@ -36,6 +36,7 @@ class Book {
           [],
     );
   }
+
 
   Map<String, dynamic> toMap() {
     return {

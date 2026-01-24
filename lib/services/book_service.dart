@@ -13,6 +13,7 @@ class BookService {
   }
 
   Future<String> getDownloadUrl(String storageUrl) async {
+    print("storageUrl="+storageUrl);
     final ref = _storage.refFromURL(storageUrl);
     return await ref.getDownloadURL();
   }

@@ -3,6 +3,7 @@ import '../models/book.dart';
 import '../models/dynamic_metadata.dart';
 import '../services/book_service.dart';
 import '../services/auth_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BookDetailScreen extends StatelessWidget {
   final Book book;
@@ -87,7 +88,10 @@ class BookDetailScreen extends StatelessWidget {
                     FilledButton.icon(
                       onPressed: () async {
                         try {
-                          final url = await bookService.getDownloadUrl(book.fileUrl!);
+                          final uri = Uri.parse(book.fileUrl!);
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri, mode: LaunchMode.externalApplication);
+                          }
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
